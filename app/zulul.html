@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+<head>
+
+</head>
+<body>
+<button onclick="spam()">
+    <img src="ZULUL.png">
+    SPAM
+</button>
+<button onclick="stopTimer()">
+    A <img src="http://cdn.frankerfacez.com/emoticon/142673/1" height="112px">
+</button>
+<button onclick="trihard()">
+    <img src="https://static-cdn.jtvnw.net/emoticons/v1/120232/3.0">
+    SEND
+</button>
+<br>
+channel
+<input id="channel" value="forsenlol" type="text">
+<br>
+message
+<input id="message" value="TriHard" type="text">
+</body>
+<script>
+
+const token = document.cookie.match(/twitch_token=(\w+)/)[1]
+let username = ''
+
+let xhr = new XMLHttpRequest()
+xhr.open('GET', 'https://api.twitch.tv/kraken/user')
+xhr.setRequestHeader('Accept', 'application/vnd.twitchtv.v5+json')
+xhr.setRequestHeader('Authorization', `OAuth ${token}`)
+xhr.onreadystatechange = (ev) => {
+    if (xhr.readyState === 4) {
+        const data = JSON.parse(xhr.responseText)
+        console.log(data)
+        username = data.name
+    }
+}
+xhr.send()
+
+const ws = new WebSocket('wss://irc-ws.chat.twitch.tv')
+
+let timer
+
+function send(msg) {
+    console.log(msg)
+    ws.send(msg)
+}
+
+ws.onopen = function() {
+    console.log('connected!')
+    ws.send(`PASS oauth:${token}`)
+    ws.send(`NICK ${username}`)
+}
+
+ws.onmessage = function(ev) {
+    console.log(ev.data)
+    if (ev.data.match(/^PING/)) {
+        send('PONG :tmi.twitch.tv')
+    }
+}
+
+function trihard() {
+    console.log('TriHard')
+    const channel = document.getElementById('channel').value.toLowerCase()
+    const message = document.getElementById('message').value
+    send(`PRIVMSG #${channel} : ${message}`)
+}
+
+function spam(delay) {
+    stopTimer()
+    timer = setInterval(() => {
+        trihard()
+    }, 1700)
+}
+
+function stopTimer() {
+    clearInterval(timer)
+}
+
+</script>
+</html>
