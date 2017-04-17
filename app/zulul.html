@@ -21,10 +21,20 @@ channel
 <br>
 message
 <input id="message" value="TriHard" type="text">
+<h1>
+messages sent total: <span id="counter-total">0</span>
+</h1>
+<h1>
+messages sent last 30s: <span id="counter-current">0</span>
+</h1>
 </body>
 <script>
 
-const token = document.cookie.match(/twitch_token=(\w+)/)[1]
+const match = document.cookie.match(/twitch_token=(\w+)/)
+if (!match) {
+    window.location = '/'
+}
+const token = match[1]
 let username = ''
 
 let xhr = new XMLHttpRequest()
@@ -46,10 +56,23 @@ xhr.send()
 const ws = new WebSocket('wss://irc-ws.chat.twitch.tv')
 
 let timer
+let messages = 0
+let counter = 0
 
 function send(msg) {
+    if (messages > 18) {
+        console.log('dont get global banned 4Head')
+        return
+    }
     console.log(msg)
     ws.send(msg)
+    messages++
+    counter++
+    setTimeout(() => {
+        messages--
+        updateCounter()
+    }, 1000 * 30)
+    updateCounter()
 }
 
 ws.onopen = function() {
@@ -73,18 +96,23 @@ function trihard() {
         return
     }
     const message = document.getElementById('message').value
-    send(`PRIVMSG #${channel} : ${message}`)
+    send(`PRIVMSG #${channel} : ${message} `)
 }
 
 function spam(delay) {
     stopTimer()
     timer = setInterval(() => {
         trihard()
-    }, 1700)
+    }, 1500)
 }
 
 function stopTimer() {
     clearInterval(timer)
+}
+
+function updateCounter(c) {
+    document.getElementById('counter-current').innerText = messages
+    document.getElementById('counter-total').innerText = counter
 }
 
 </script>
