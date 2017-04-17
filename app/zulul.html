@@ -36,6 +36,9 @@ xhr.onreadystatechange = (ev) => {
         const data = JSON.parse(xhr.responseText)
         console.log(data)
         username = data.name
+        if (!username) {
+            window.location = '/'
+        }
     }
 }
 xhr.send()
@@ -64,7 +67,11 @@ ws.onmessage = function(ev) {
 
 function trihard() {
     console.log('TriHard')
-    const channel = document.getElementById('channel').value.toLowerCase()
+    const channel = document.getElementById('channel').value.toLowerCase().match(/\w+/)[0]
+    if (channel === 'ice_poseidon') {
+        alert('ZULUL')
+        return
+    }
     const message = document.getElementById('message').value
     send(`PRIVMSG #${channel} : ${message}`)
 }
