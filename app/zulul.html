@@ -60,7 +60,7 @@ let messages = 0
 let counter = 0
 
 function send(msg) {
-    if (messages > 18) {
+    if (messages > 17) {
         console.log('dont get global banned 4Head')
         return
     }
@@ -71,7 +71,7 @@ function send(msg) {
     setTimeout(() => {
         messages--
         updateCounter()
-    }, 1000 * 30)
+    }, 1000 * 32)
     updateCounter()
 }
 
