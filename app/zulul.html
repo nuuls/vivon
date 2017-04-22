@@ -91,11 +91,10 @@ ws.onmessage = function(ev) {
 function trihard() {
     console.log('TriHard')
     const channel = document.getElementById('channel').value.toLowerCase().match(/\w+/)[0]
+    let message = document.getElementById('message').value
     if (channel === 'ice_poseidon') {
-        alert('ZULUL')
-        return
+        message = 'VI VON ZULUL'
     }
-    const message = document.getElementById('message').value
     send(`PRIVMSG #${channel} : ${message} `)
 }
 
